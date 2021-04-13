@@ -18,8 +18,8 @@ class UserSeed extends Seeder
         DB::table('users')->insert([
             'code' => Str::uuid(),
             'name' => "Administrador",
-            'email' => 'suporte@sejatech.com',
-            'password' => bcrypt('Seja9800@@$$'),
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('Admin@123'),
             'profile' => 'admin',
             'is_approved' => true,
             'created_at' => date("Y-m-d H:i:s"),
