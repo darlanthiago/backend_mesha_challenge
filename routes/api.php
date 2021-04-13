@@ -19,9 +19,16 @@ use App\Http\Controllers\UserController;
 
 Route::group(['prefix' => '/user'], function () {
 
-    Route::post('/register', [UserController::class, 'store']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
+
+        Route::group(['middleware' => ['sanctum.abilities:admin']], function () {
+
+            Route::post('/register', [UserController::class, 'store']);
+
+            Route::get('/', [UserController::class, 'index']);
+        });
+
 
         Route::get('/me', [UserController::class, 'me']);
     });
