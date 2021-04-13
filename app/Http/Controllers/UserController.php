@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::simplePaginate(10);
+        return User::paginate(10);
     }
 
     /**
@@ -29,7 +29,9 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:8|max:15'
+            'password' => 'required|string|min:8|max:15',
+            'profile' => 'nullable|in:admin,employee,user',
+            'is_approved' => 'required|boolean',
         ]);
 
         $user = new User();
@@ -37,13 +39,12 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->code = Str::uuid();
         $user->password = bcrypt($request->password);
+        $user->profile = $request->profile;
+        $user->is_approved = $request->is_approved;
 
         $user->save();
 
-        return response()->json([
-            'email' => $user->email,
-            'name' => $user->name,
-        ], 201);
+        return response()->json($user, 201);
     }
 
     /**
