@@ -4,12 +4,11 @@ namespace App\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use GoldSpecDigital\LaravelEloquentUUID\Database\Eloquent\Model;
 
-class PasswordReset extends Model
+class Service extends Model
 {
     use HasFactory;
-
 
     /**
      * Prepare a date for array / JSON serialization.

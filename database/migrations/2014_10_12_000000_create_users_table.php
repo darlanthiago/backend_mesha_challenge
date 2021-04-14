@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->enum('profile', ['admin', 'employee', 'user'])->default('employee');
             $table->boolean('is_approved')->default(false);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

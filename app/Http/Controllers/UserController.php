@@ -55,7 +55,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::withTrashed()->find($id);
+
+        if (empty($user)) {
+            return response()->json(['error' => 'User Not Found'], 404);
+        }
+
+        return response()->json($user);
     }
 
     /**
@@ -78,7 +84,50 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::withTrashed()->find($id);
+
+        if (empty($user)) {
+            return response()->json(['error' => 'User Not Found'], 404);
+        }
+
+        $action = $request->query('action');
+
+        if (!$action) {
+
+            $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|string|email|unique:users,email,' . $id,
+                'profile' => 'nullable|in:admin,employee,user',
+                'is_approved' => 'required|boolean',
+            ]);
+
+            $user->email = $request->email;
+            $user->name = $request->name;
+            $user->profile = $request->profile;
+            $user->is_approved = $request->is_approved;
+
+            $user->save();
+
+            return response()->json($user, 201);
+        }
+
+        switch ($action) {
+            case 'approved':
+                $user->is_approved = true;
+                break;
+
+            case 'disapproved':
+                $user->is_approved = false;
+                break;
+
+            case 'restore':
+                $user->restore();
+                break;
+        }
+
+        $user->save();
+
+        return response()->json($user);
     }
 
     /**
@@ -89,6 +138,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+
+        if (empty($user)) {
+            return response()->json(['error' => 'User Not Found'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json($user);
     }
 }
