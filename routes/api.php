@@ -25,6 +25,8 @@ Route::group(['prefix' => '/user'], function () {
 
         Route::get('/me', [UserController::class, 'me']);
 
+        Route::post('/avatar', [UserController::class, 'avatar']);
+
         Route::group(['middleware' => ['sanctum.abilities:admin']], function () {
 
             Route::post('/register', [UserController::class, 'store']);
