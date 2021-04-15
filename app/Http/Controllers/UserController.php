@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -124,6 +125,36 @@ class UserController extends Controller
                 $user->restore();
                 break;
         }
+
+        $user->save();
+
+        return response()->json($user);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function avatar(Request $request)
+    {
+
+        $request->validate([
+            'avatar_image' => 'file|mimetypes:image/*',
+        ]);
+
+        $user = request()->user();
+
+        $filename = Str::uuid() . "." . $request->file('avatar_image')->getClientOriginalExtension();
+
+        $path = $request->file('avatar_image')->storePubliclyAs(
+            'avatars',
+            $filename,
+            's3'
+        );
+
+        $user->avatar_url = Storage::url($path);
 
         $user->save();
 
